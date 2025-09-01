@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Coffee Queue - The Scots College</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: #1e3a8a;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: #fbbf24;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            color: #fbbf24;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3a8a;
+            padding: 20px 0;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-title {
+            color: #fbbf24;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-item {
+            padding: 12px 20px;
+            color: #cbd5e1;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+            border-left-color: #fbbf24;
+        }
+
+        .sidebar-item.active {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border-left-color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            background: white;
+            padding: 30px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-banner-title {
+            color: #92400e;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .info-banner-text {
+            color: #92400e;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .status-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .status-text {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .current-time {
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 18px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            accent-color: #fbbf24;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        .btn {
+            background: #fbbf24;
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #f59e0b;
+            transform: translateY(-1px);
+        }
+
+        .queue-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .queue-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .queue-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .queue-count {
+            background: #fbbf24;
+            color: #1e3a8a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .queue-content {
+            padding: 20px;
+        }
+
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .queue-item:last-child {
+            border-bottom: none;
+        }
+
+        .queue-item.current-user {
+            background: #fef3c7;
+            margin: 0 -20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #fbbf24;
+        }
+
+        .queue-user-info {
+            flex: 1;
+        }
+
+        .queue-user-name {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 4px;
+        }
+
+        .queue-user-details {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .priority-badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
+        .priority-badge.normal {
+            background: #22c55e;
+        }
+
+        .queue-time {
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .user-status-highlight {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .status-position {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .status-time {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <div class="logo">☕</div>
+            <div>
+                <div class="header-title">Staff Coffee Queue</div>
+                <div class="header-subtitle">The Scots College Sydney</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Coffee Service</div>
+                <div class="sidebar-item active">Queue Management</div>
+                <div class="sidebar-item">Service Hours</div>
+                <div class="sidebar-item">Coffee Menu</div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Links</div>
+                <div class="sidebar-item">Staff Portal</div>
+                <div class="sidebar-item">Timetable</div>
+                <div class="sidebar-item">Resources</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Free Coffee Queue System</h1>
+                <p class="page-subtitle">Join the queue for complimentary morning coffee service</p>
+            </div>
+
+            <div class="info-banner">
+                <div class="info-banner-title">Service Information</div>
+                <div class="info-banner-text">
+                    Coffee service operates daily from 8:00 AM to 9:00 AM. Teachers with first period classes (starting at 8:25 AM) receive priority service and must collect their coffee before 8:25 AM.
+                </div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-info">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">Queue Open - Ready to Accept Registrations</div>
+                </div>
+                <div class="current-time" id="currentTime">Loading...</div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Join Coffee Queue</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label class="form-label" for="userName">Full Name</label>
+                            <input type="text" id="userName" class="form-input" placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="hasFirstPeriod">
+                                <label for="hasFirstPeriod">I have a class in first period (8:25 AM start)</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="coffeeType">Coffee Preference</label>
+                            <select id="coffeeType" class="form-select">
+                                <option value="">Select your preferred coffee</option>
+                                <option value="regular">Regular Coffee</option>
+                                <option value="decaf">Decaffeinated Coffee</option>
+                                <option value="espresso">Espresso</option>
+                                <option value="latte">Latte</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn" onclick="joinQueue()">Join Queue</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Your Queue Status</h2>
+                    </div>
+                    <div class="card-content" id="userStatus">
+                        <div class="empty-state">
+                            Join the queue to view your position and estimated pickup time
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="queue-section">
+                <div class="queue-header">
+                    <h2 class="queue-title">Current Queue</h2>
+                    <div class="queue-count" id="queueCount">0 people</div>
+                </div>
+                <div class="queue-content" id="queueDisplay">
+                    <div class="empty-state">
+                        No staff members in queue yet. Be the first to join!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Coffee queue management system
+        let coffeeQueue = [];
+        let currentUser = null;
+        const COFFEE_PREP_TIME = 2; // 2 minutes per coffee
+
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // Calculate estimated pickup time
+        function calculateEstimatedTime(position) {
+            const startTime = new Date();
+            startTime.setHours(8, 0, 0, 0);
+            
+            const estimatedMinutes = (position - 1) * COFFEE_PREP_TIME;
+            const pickupTime = new Date(startTime.getTime() + estimatedMinutes * 60000);
+            
+            return pickupTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // Sort queue by priority
+        function sortQueue() {
+            coffeeQueue.sort((a, b) => {
+                if (a.hasPriority && !b.hasPriority) return -1;
+                if (!a.hasPriority && b.hasPriority) return 1;
+                return a.joinTime - b.joinTime;
+            });
+        }
+
+        // Update queue display
+        function updateQueueDisplay() {
+            const queueDisplay = document.getElementById('queueDisplay');
+            const queueCount = document.getElementById('queueCount');
+            
+            queueCount.textContent = `${coffeeQueue.length} people`;
+            
+            if (coffeeQueue.length === 0) {
+                queueDisplay.innerHTML = `
+                    <div class="empty-state">
+                        No staff members in queue yet. Be the first to join!
+                    </div>
+                `;
+                return;
+            }
+
+            sortQueue();
+            
+            const queueHTML = coffeeQueue.map((person, index) => {
+                const estimatedTime = calculateEstimatedTime(index + 1);
+                const isCurrentUser = currentUser && person.id === currentUser.id;
+                
+                return `
+                    <div class="queue-item ${isCurrentUser ? 'current-user' : ''}">
+                        <div class="queue-user-info">
+                            <div class="queue-user-name">
+                                ${person.name}${isCurrentUser ? ' (You)' : ''}
+                                <span class="priority-badge ${person.hasPriority ? '' : 'normal'}">
+                                    ${person.hasPriority ? 'Priority' : 'Regular'}
+                                </span>
+                            </div>
+                            <div class="queue-user-details">
+                                Position ${index + 1} • ${person.coffeeType}${person.hasPriority ? ' • First period class' : ''}
+                            </div>
+                        </div>
+                        <div class="queue-time">${estimatedTime}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            queueDisplay.innerHTML = queueHTML;
+        }
+
+        // Update user status
+        function updateUserStatus() {
+            const userStatus = document.getElementById('userStatus');
+            
+            if (!currentUser) {
+                userStatus.innerHTML = `
+                    <div class="empty-state">
+                        Join the queue to view your position and estimated pickup time
+                    </div>
+                `;
+                return;
+            }
+
+            const userIndex = coffeeQueue.findIndex(person => person.id === currentUser.id);
+            if (userIndex === -1) {
+                userStatus.innerHTML = `
+                    <div class="empty-state">You are not currently in the queue</div>
+                `;
+                return;
+            }
+
+            const position = userIndex + 1;
+            const estimatedTime = calculateEstimatedTime(position);
+            
+            userStatus.innerHTML = `
+                <div class="user-status-highlight">
+                    <div class="status-position">Queue Position: #${position}</div>
+                    <div class="status-time">Estimated Time: ${estimatedTime}</div>
+                    <p style="margin: 10px 0; color: #64748b; font-size: 14px;">
+                        Coffee: ${currentUser.coffeeType}
+                    </p>
+                    ${currentUser.hasPriority ? 
+                        '<p style="color: #ef4444; font-weight: 600; font-size: 14px;">⚡ Priority Service - Must collect before 8:25 AM</p>' : 
+                        '<p style="color: #22c55e; font-weight: 600; font-size: 14px;">✓ Regular Service</p>'
+                    }
+                </div>
+            `;
+        }
+
+        // Join queue function
+        function joinQueue() {
+            try {
+                console.log('Join queue function called');
+                
+                const nameElement = document.getElementById('userName');
+                const coffeeTypeElement = document.getElementById('coffeeType');
+                const hasFirstPeriodElement = document.getElementById('hasFirstPeriod');
+                
+                if (!nameElement || !coffeeTypeElement || !hasFirstPeriodElement) {
+                    console.error('Required form elements not found');
+                    alert('Form elements not found. Please refresh the page.');
+                    return;
+                }
+                
+                const name = nameElement.value ? nameElement.value.trim() : '';
+                const hasFirstPeriod = hasFirstPeriodElement.checked;
+                const coffeeType = coffeeTypeElement.value ? coffeeTypeElement.value.trim() : '';
+                
+                console.log('Form values:', { name, hasFirstPeriod, coffeeType });
+                console.log('Name length:', name.length, 'Coffee type length:', coffeeType.length);
+                
+                // Check if both name and coffee type are provided
+                if (name.length === 0 || coffeeType.length === 0) {
+                    console.log('Validation failed - missing required fields');
+                    alert('Please enter your name and select a coffee preference.');
+                    return;
+                }
+
+                // Check if teacher already in queue
+                if (coffeeQueue.some(person => person.name.toLowerCase() === name.toLowerCase())) {
+                    console.log('Duplicate name found in queue');
+                    alert('This name is already registered in the queue.');
+                    return;
+                }
+
+                // Create new queue entry
+                const newPerson = {
+                    id: Date.now(),
+                    name: name,
+                    hasPriority: hasFirstPeriod,
+                    coffeeType: coffeeType,
+                    joinTime: Date.now()
+                };
+
+                console.log('Adding person to queue:', newPerson);
+                
+                coffeeQueue.push(newPerson);
+                currentUser = newPerson;
+                
+                console.log('Current queue:', coffeeQueue);
+                
+                // Clear form
+                nameElement.value = '';
+                hasFirstPeriodElement.checked = false;
+                coffeeTypeElement.value = '';
+                
+                // Update displays
+                updateQueueDisplay();
+                updateUserStatus();
+                
+                // Show success message
+                alert(`Welcome to the queue, ${name}! Your position and estimated time are displayed in your status panel.`);
+                
+            } catch (error) {
+                console.error('Error in joinQueue function:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Initialize
+        updateTime();
+        updateQueueDisplay();
+        updateUserStatus();
+        
+        // Add event listener for join button
+        document.addEventListener('DOMContentLoaded', function() {
+            const joinButton = document.querySelector('.btn');
+            if (joinButton) {
+                joinButton.addEventListener('click', joinQueue);
+                console.log('Event listener added to join button');
+            }
+        });
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
